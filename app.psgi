@@ -1,5 +1,4 @@
 use strict;
-use utf8;
 use File::Spec;
 use File::Basename;
 use lib File::Spec->catdir(dirname(__FILE__), 'extlib', 'lib', 'perl5');
@@ -12,10 +11,6 @@ use Plack::Session::Store::DBI;
 use Plack::Session::State::Cookie;
 use DBI;
 
-{
-    my $c = Xpost->new();
-    $c->setup_schema();
-}
 my $db_config = Xpost->config->{DBI} || die "Missing configuration for DBI";
 builder {
     enable 'Plack::Middleware::Static',
