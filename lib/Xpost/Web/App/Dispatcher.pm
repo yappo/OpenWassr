@@ -1,4 +1,4 @@
-package Xpost::Web::Dispatcher;
+package Xpost::Web::App::Dispatcher;
 use strict;
 use warnings;
 use utf8;

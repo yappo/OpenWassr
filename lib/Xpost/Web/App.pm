@@ -1,14 +1,19 @@
-package Xpost::Web;
+package Xpost::Web::App;
 use strict;
 use warnings;
 use utf8;
 use parent qw/Xpost Amon2::Web/;
 use File::Spec;
 
+use Class::Accessor::Lite (
+    new => 0,
+    rw  => [qw/stash/],
+);
+
 # dispatcher
-use Xpost::Web::Dispatcher;
+use Xpost::Web::App::Dispatcher;
 sub dispatch {
-    return Xpost::Web::Dispatcher->dispatch($_[0]) or die "response is not generated";
+    return Xpost::Web::App::Dispatcher->dispatch($_[0]) or die "response is not generated";
 }
 
 # setup view class
@@ -16,7 +21,7 @@ use Text::Xslate;
 {
     my $view_conf = __PACKAGE__->config->{'Text::Xslate'} || +{};
     unless (exists $view_conf->{path}) {
-        $view_conf->{path} = [ File::Spec->catdir(__PACKAGE__->base_dir(), 'tmpl') ];
+        $view_conf->{path} = [ File::Spec->catdir(__PACKAGE__->base_dir(), 'tmpl/app') ];
     }
     my $view = Text::Xslate->new(+{
         'syntax'   => 'Kolon',
@@ -66,12 +71,20 @@ __PACKAGE__->add_trigger(
     },
 );
 
+use Amon2::Config::Simple;
 __PACKAGE__->add_trigger(
     BEFORE_DISPATCH => sub {
         my ( $c ) = @_;
-        # ...
+        $c->stash({navi => Amon2::Config::Simple->load($c, {environment => 'navi'})->{nav}});
         return;
     },
 );
+
+sub render {
+    my ($c, $path, $data) = @_;
+    $data ||= {};
+    $data = {%{$c->stash()}, $data};
+    return $c->SUPER::render($path, $data);
+}
 
 1;

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title><: $title || 'Xpost' :></title>
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <script src="<: uri_for('/static/js/jquery-1.7.1.min.js') :>"></script>
+    <link href="<: uri_for('/static/bootstrap/bootstrap.min.css') :>" rel="stylesheet" type="text/css" />
+    <script src="<: uri_for('/static/bootstrap/bootstrap-dropdown.js') :>"></script>
+
+
+    <link href="<: static_file('/static/css/main.css') :>" rel="stylesheet" type="text/css" media="screen" />
+    <script src="<: static_file('/static/js/main.js') :>"></script>
+    <!--[if lt IE 9]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body<: if $bodyID { :> id="<: $bodyID :>"<: } :>>
+    <div class="topbar-wrapper" style="z-index: 5;">
+        <div class="topbar" data-dropdown="dropdown">
+            <div class="topbar-inner">
+                <div class="container">
+                <h3><a href="/">Xpost</a></h3>
+                <ul class="nav">
+                  : for $navi -> $n {
+                  : my $path = c().req.uri.path;
+                    : if defined($n.children) {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"><: $n.title :></a>
+                        : my $children = $n.children;
+                        <ul class="dropdown-menu">
+                        : for $children -> $c {
+                        : if $c == "divider" {
+                        <li class="divider"></li>
+                        : } else {
+                        <li>
+                            <a href="<: $c.link :>"><: $c.title :></a>
+                        </li>
+                        : }
+                        : }
+                        </ul>
+                    </li>
+                    : } elsif $path == $n.link {
+                    <li class="active"><a href="<: $n.link :>"><: $n.title :></a></li>
+                    : } else {
+                    <li><a href="<: $n.link :>"><: $n.title :></a></li>
+                    : }
+                  : }
+                </ul>
+                </div>
+            </div><!-- /topbar-inner -->
+        </div><!-- /topbar -->
+    </div>
+    <div class="container">
+        <div id="main">
+            : block content -> {}
+        </div>
+        <footer class="footer">
+            &copy; 2011 Senchan.jp All rights reserved
+        </footer>
+    </div>
+</body>
+</html>
+:macro pager -> {
+:if defined $pager {
+    <div class="pagination">
+        <ul>
+            :if $pager.previous_page {
+                <li class="prev"><a href="<: uri_with({page => $pager.previous_page}) :>" rel="previous">&larr; Back</a><li>
+            :} else {
+                <li class="prev disabled"><a href="#">&larr; Back</a><li>
+            :}
+
+            :if $pager.can('pages_in_navigation') {
+                <: # IF Data::Page::Navigation is loaded :>
+                : for $pager.pages_in_navigation(5) -> $p {
+                <li <: if $p == $pager.current_page { :>class="active"<: } :>><a href="<: uri_with({page => $p}) :>"><: p :></a></li>
+                :}
+            :} else {
+                <li><a href="#"><: $pager.current_page :></a></li>
+            :}
+
+            :if $pager.next_page() {
+                <li class="next"><a href="<: uri_with({page => $pager.next_page}) :>" rel="next">Next &rarr;</a><li>
+            :} else {
+                <li class="next disabled"><a href="#">Next &rarr;</a><li>
+            :}
+        </ul>
+    </div>
+:}
+:}

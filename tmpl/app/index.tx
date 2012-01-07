@@ -1,0 +1,8 @@
+:cascade layout
+
+:around content -> {
+    <h1>2011年マビノギ課金ログ</h1>
+    <p>課金件数：<: $cnt :>件</p>
+    <p>合計課金額：￥<: $sum :></p>
+:}
+
