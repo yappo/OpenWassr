@@ -5,8 +5,8 @@ use Test::More;
 
 use_ok $_ for qw(
     Xpost
-    Xpost::Web
-    Xpost::Web::Dispatcher
+    Xpost::Web::App
+    Xpost::Web::App::Dispatcher
 );
 
 done_testing;

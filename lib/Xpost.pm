@@ -7,7 +7,7 @@ package Xpost {
     use DBI;
     sub setup_schema {
         my $self = shift;
-        my $dbh = $self->get_dbi(type => 'master');
+        my $dbh = $self->get_db(type => 'master')->dbh;
         my $driver_name = $dbh->{Driver}->{Name};
         my $fname = lc("sql/${driver_name}.sql");
         open my $fh, '<:encoding(UTF-8)', $fname or die "$fname: $!";
@@ -29,7 +29,7 @@ package Xpost {
         if ( !defined $self->{db}->{$type} ) {
             $self->{db}->{$type} = Xpost::DB->get_db(type => $type);
         }
-        return $self->{db};
+        return $self->{db}->{$type};
     }
 
 }
