@@ -3,8 +3,10 @@ use warnings;
 package Xpost::Model {
     use parent qw/Teng::Row/;
 
-    use Xpost::DB;
     use String::CamelCase ();
+
+    use Xpost::DB;
+    use Xpost::Util::Hash;
 
     sub db {Xpost->context->db}
     sub dbh {shift->db->dbh}
