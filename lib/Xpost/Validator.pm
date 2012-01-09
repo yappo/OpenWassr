@@ -14,7 +14,7 @@ package Xpost::Validator {
         my $class = shift;
         my $self = $class->SUPER::new(@_);
         $self->load_function_message('ja');
-        $self->set_param_message(%{Amon2::Config::Simple->load(Amon2->context(), {env => 'validator'})->{param_message}});
+        $self->set_message_data(Amon2::Config::Simple->load(Amon2->context(), {environment => 'validator'}));
         return $self;
     }
 
