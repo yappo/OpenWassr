@@ -12,5 +12,5 @@ return +{
             title => 'Profile',
             link  => '/profile/',
         },
-    ]
+    ],
 };

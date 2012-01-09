@@ -6,15 +6,8 @@ package Xpost::Model {
     use Xpost::DB;
     use String::CamelCase ();
 
-    sub get_db {
-        my $class = shift;
-        return Xpost::DB->get_db(@_);
-    }
-
-    sub get_dbi {
-        my $class = shift;
-        return Xpost::DB->get_dbi(@_);
-    }
+    sub db {Xpost->context->db}
+    sub dbh {shift->db->dbh}
 
     sub table_name {
         my $class = shift;
@@ -32,49 +25,28 @@ package Xpost::Model {
     }
 
     sub search {
-        state $validator = Data::Validator->new(
-            from => {isa => 'Xpost::DBType', default => 'slave'},
-            args => {isa => 'ArrayRef', default => sub { [{}, {}] }},
-        )->with(qw/Method/);
-        my ($class, $args) = $validator->validate(@_);
-        my $db = $class->get_db(type => $args->{from});
-        return $db->search($class->table_name => @{$args->{args}});
+        my $class = shift;
+        return $class->db->search($class->table_name => @_);
     }
 
     sub search_with_pager {
-        state $validator = Data::Validator->new(
-            from => {isa => 'Xpost::DBType', default => 'slave'},
-            args => {isa => 'ArrayRef', default => sub { [{}, {}] }},
-        )->with(qw/Method/);
-        my ($class, $args) = $validator->validate(@_);
-        my $db = $class->get_db(type => $args->{from});
-        return $db->search_with_pager($class->table_name => @{$args->{args}});
+        my $class = shift;
+        return $class->db->search_with_pager($class->table_name => @_);
     }
 
     sub single {
-        state $validator = Data::Validator->new(
-            from => {isa => 'Xpost::DBType', default => 'slave'},
-            args => {isa => 'ArrayRef', default => sub { [{}, {}] }},
-        )->with(qw/Method/);
-        my ($class, $args) = $validator->validate(@_);
-        my $db = $class->get_db(type => $args->{from});
-        return $db->single($class->table_name => @{$args->{args}});
+        my $class = shift;
+        return $class->db->single($class->table_name => @_);
     }
 
     sub insert {
-        state $validator = Data::Validator->new(
-            args => {isa => 'HashRef'},
-        )->with(qw/Method/);
-        my ($class, $args) = $validator->validate(@_);
-        return $class->get_db(type => 'master')->insert($class->table_name => {%{$args->{args}}});
+        my $class = shift;
+        return $class->db->insert($class->table_name => @_);
     }
 
     sub fast_insert {
-        state $validator = Data::Validator->new(
-            args => {isa => 'HashRef'},
-        )->with(qw/Method/);
-        my ($class, $args) = $validator->validate(@_);
-        return $class->get_db(type => 'master')->fast_insert($class->table_name => {%{$args->{args}}});
+        my $class = shift;
+        return $class->db->fast_insert($class->table_name => @_);
     }
 }
 1;

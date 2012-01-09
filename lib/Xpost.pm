@@ -3,11 +3,12 @@ use warnings;
 package Xpost {
     use parent qw/Amon2/;
 
+    our $VERSION = '0.01';
+
     # initialize database
-    use DBI;
     sub setup_schema {
         my $self = shift;
-        my $dbh = $self->get_db(type => 'master')->dbh;
+        my $dbh = $self->db->dbh;
         my $driver_name = $dbh->{Driver}->{Name};
         my $fname = lc("sql/${driver_name}.sql");
         open my $fh, '<:encoding(UTF-8)', $fname or die "$fname: $!";
@@ -19,17 +20,12 @@ package Xpost {
     }
 
     use Xpost::DB;
-    sub get_db {
-        state $type_validator = Data::Validator->new(
-            type => {isa => 'Xpost::DBType', default => 'master'},
-        )->with(qw/Method/);
-        my ($self, $args) = $type_validator->validate(@_);
-        $self->{db} //= {};
-        my $type = $args->{type};
-        if ( !defined $self->{db}->{$type} ) {
-            $self->{db}->{$type} = Xpost::DB->get_db(type => $type);
+    sub db {
+        my $self = shift;
+        if ( !defined $self->{db} ) {
+            $self->{db} = Xpost::DB->db;
         }
-        return $self->{db}->{$type};
+        return $self->{db};
     }
 
 }

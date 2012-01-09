@@ -14,27 +14,19 @@ package Xpost::DB {
 
     use Xpost;
 
-    # ENUMの定義
-    use Mouse::Util::TypeConstraints;
-
-    enum 'Xpost::DBType' => qw(master slave);
-
-    no Mouse::Util::TypeConstraints;
+    __PACKAGE__->load_plugin('Count');
+    __PACKAGE__->load_plugin('Pager');
 
     sub conf {Xpost->config}
 
-    sub get_db {
+    sub db {
         my $class = shift;
-        my $dbi = $class->get_dbi(@_);
-        return $class->new(dbh => $dbi);
+        my $dbh = $class->get_dbh(@_);
+        return $class->new(dbh => $dbh);
     }
 
-    sub get_dbi {
-        state $type_validator = Data::Validator->new(
-            type => {isa => 'Xpost::DBType', default => 'master'},
-        )->with(qw/Method/);
-        my ($class, $args) = $type_validator->validate(@_);
-        return Scope::Container::DBI->connect($class->conf->{datasource}->{$args->{type}});
+    sub get_dbh {
+        return Scope::Container::DBI->connect(shift->conf->{DBI});
     }
 
     #各メソッドへのtrigger
