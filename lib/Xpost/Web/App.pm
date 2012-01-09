@@ -83,7 +83,7 @@ __PACKAGE__->add_trigger(
 sub render {
     my ($c, $path, $data) = @_;
     $data ||= {};
-    $data = {%{$c->stash()}, $data};
+    $data = {%{$c->stash()}, %$data};
     return $c->SUPER::render($path, $data);
 }
 
