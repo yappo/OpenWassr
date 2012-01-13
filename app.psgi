@@ -17,6 +17,7 @@ use DBI;
 }
 my $db_config = Xpost->config->{DBI} || die "Missing configuration for DBI";
 builder {
+    enable 'Log::Minimal';
     enable 'Plack::Middleware::ReverseProxy';
     enable 'Plack::Middleware::Static',
         path => qr{^(?:/static/)},
