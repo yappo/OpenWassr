@@ -18,6 +18,7 @@ sub dispatch {
 
 # setup view class
 use Text::Xslate;
+use Xpost::Util::Template;
 {
     my $view_conf = __PACKAGE__->config->{'Text::Xslate'} || +{};
     unless (exists $view_conf->{path}) {
@@ -25,7 +26,10 @@ use Text::Xslate;
     }
     my $view = Text::Xslate->new(+{
         'syntax'   => 'Kolon',
-        'module'   => [ 'Text::Xslate::Bridge::Star' ],
+        'module'   => [
+            'Text::Xslate::Bridge::Star',
+            'Text::Xslate::Bridge::TT2Like',
+        ],
         'function' => {
             c => sub { Amon2->context() },
             uri_with => sub { Amon2->context()->req->uri_with(@_) },
@@ -42,6 +46,7 @@ use Text::Xslate;
                     return $c->uri_for($fname, { 't' => $static_file_cache{$fname} || 0 });
                 }
             },
+            %{Xpost::Util::Template->export_functions},
         },
         %$view_conf
     });

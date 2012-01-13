@@ -92,3 +92,39 @@
     </div>
 :}
 :}
+:macro input -> ($args) {
+:# Data::Validatorでバリデーション
+:my $a = validate_input_args($args);
+:my $error_msg   = $validator ? get_validator_error($a.name, $validator) : ''
+:my $error_class = $error_msg ? 'error' : ''
+:my $divcls = ['clearfix'];
+:if ($error_class) { $divcls.push($error_class) }
+<div class="<: $divcls.join(' ') :>">
+    <label for="<: $a.id :>"><: $a.label :></label>
+    <div class="input">
+        :# タイプごとに入力エリア出し分け
+        :if ($a.type == 'textarea') {
+        <textarea id="<: $a.id :>" class="xlarge<: $error_class :>" name="<: $a.name :>" rows="5"></textarea>
+        :} else {
+        :my $cls = ['xlarge'];
+        :if ($a.class) { $cls.push($a.class) }
+        :if ($error_class) { $cls.push($error_class) }
+        <input type="<: $a.type :>" id="<: $a.id :>" name="<: $a.name :>" class="<: $cls.join(' ') :>" />
+        :}
+        :if ($a.help_inline) {
+        <span class="help-inline"><: $a.help_inline :></span>
+        :}
+        :# エラーがある場合は出す
+        :if ($a.display_error) {
+        <span class="help-block"><: $error_msg :></span>
+        :}
+        :if ($a.help_block) {
+        <span class="help-block"><: $a.help_block :></span>
+        :}
+    </div>
+</div>
+:}
+:macro hidden -> ($args) {
+: my $a = validate_hidden_args($args)
+<input type="hidden" name="<: $a.name :>" value="<: $a.value :>" />
+:}
