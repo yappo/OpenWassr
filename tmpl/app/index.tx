@@ -1,8 +1,18 @@
 :cascade layout
 
 :around content -> {
-    <h1>2011年マビノギ課金ログ</h1>
-    <p>課金件数：<: $cnt :>件</p>
-    <p>合計課金額：￥<: $sum :></p>
+    <h1>Xpost.jp <small>Simple twitter clone</small></h1>
+    <p>More simple. More fun.</p>
+
+    <h2>今すぐ登録</h2>
+    <p>登録にはメールアドレスが必要です。</p>
+    <p>携帯メールでも可ですがPCメールをオススメします。</p>
+    <p>登録されたメールアドレスはXpostからの通知、サポートなどサービスに必要な場合にのみ利用し、Senchan.jpの運営する他サービス含む他の目的には使用しません。</p>
+    <form action="/register/email" method="post" class="form-stacked">
+        :input({type => 'text', name => 'email', label => 'Email', class => 'span12'})
+        <div class="actions">
+            <button type="submit" class="btn primary">登録</button>
+        </div>
+    </form>
 :}
 

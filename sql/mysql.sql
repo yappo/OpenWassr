@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `tweet` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL,
   `created_at` datetime NOT NULL,
   `username_hash` int(10) unsigned NOT NULL,
   `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,

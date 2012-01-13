@@ -40,10 +40,26 @@ sub slurp {
 # initialize database
 use Xpost;
 {
-    unlink 'db/test.db' if -f 'db/test.db';
-
     my $c = Xpost->new();
     $c->setup_schema();
+}
+
+sub setup_db {
+    my $c = Xpost->new();
+    my $config = $c->config;
+    my $datasource = $config->{DBI};
+    my $dsn = $datasource->[0];
+    $dsn =~ s/mysql:([^;]+)/mysql:/;
+    my $dbname = $1;
+    my $dbh = DBI->connect(@{$datasource}, $config->{dbi_option});
+    $dbh->do(sprintf(q{ drop database if exists %s}, $dbname))
+        or die $dbh->errstr;
+    $dbh->do(sprintf(q{ create database %s}, $dbname))
+        or die $dbh->errstr;
+
+    $dbh->disconnect;
+
+    Xpost->context->setup_schema();
 }
 
 1;
