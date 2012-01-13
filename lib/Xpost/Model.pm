@@ -3,6 +3,9 @@ use warnings;
 package Xpost::Model {
     use parent qw/Teng::Row/;
 
+    use Class::Method::Modifiers;
+    use DBIx::QueryLog;
+    use Log::Minimal;
     use String::CamelCase ();
 
     use Xpost::DB;
@@ -24,6 +27,36 @@ package Xpost::Model {
             *{"$class\::table_name"} = $code; ## no critic
         }
         return $table_name;
+    }
+
+    before qw/search search_with_pager single/ => sub  {
+        my ($class, $args, $opt) = @_;
+        $class->add_hash_to_cond($args);
+    };
+
+    before qw/count/ => sub  {
+        my ($class, $cnt_column, $args, $opt) = @_;
+        $class->add_hash_to_cond($args);
+    };
+
+    sub add_hash_to_cond {
+        my ($class, $args) = @_;
+        my $table = $class->db->schema->get_table($class->table_name);
+        return unless $table;
+        debugf(ddf($table));
+        my @hash_coluns = grep /_hash$/, @{$table->columns};
+        return unless @hash_coluns;
+        for my $hash_column (@hash_coluns) {
+            my ($column) = ($hash_column =~ /^(.+)_hash$/);
+            warnf($column);
+            next unless exists $args->{$column};
+            $args->{$hash_column} = $class->make_hash($args->{$column});
+        }
+    }
+
+    sub count {
+        my $class = shift;
+        return $class->db->count($class->table_name => @_);
     }
 
     sub search {
@@ -50,5 +83,6 @@ package Xpost::Model {
         my $class = shift;
         return $class->db->fast_insert($class->table_name => @_);
     }
+
 }
 1;
