@@ -4,7 +4,6 @@ package Xpost::Model {
     use parent qw/Teng::Row/;
 
     use Class::Method::Modifiers;
-    use DBIx::QueryLog;
     use Log::Minimal;
     use String::CamelCase ();
 
