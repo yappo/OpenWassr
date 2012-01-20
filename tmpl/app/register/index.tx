@@ -1,0 +1,15 @@
+:cascade layout
+
+:around content -> {
+    <h1>会員登録</h1>
+    <p>IDとパスワードを入力してください</p>
+    <form action="/register/?u=<: c().req.param('u') :>" method="post" class="form-stacked">
+        :input({type => 'text', name => 'username', label => 'ユーザーID', class => 'span12', help_block => '3～16文字で入力してください。<br />' ~ 'ユーザーIDはURLに使われます。 ex) ' ~ 'http://' ~ c().req.uri.host ~ '/takuji'})
+        :input({type => 'password', name => 'password', label => 'パスワード', class => 'span12', help_block => '6~255文字で入力してください。'})
+        :input({type => 'password', name => 'password2', label => 'パスワード(確認)', class => 'span12', help_block => '上と同じものを入力してください。'})
+        <div class="actions">
+            <button type="submit" class="btn primary">確認</button>
+        </div>
+    </form>
+:}
+

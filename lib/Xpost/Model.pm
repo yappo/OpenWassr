@@ -42,12 +42,10 @@ package Xpost::Model {
         my ($class, $args) = @_;
         my $table = $class->db->schema->get_table($class->table_name);
         return unless $table;
-        debugf(ddf($table));
         my @hash_coluns = grep /_hash$/, @{$table->columns};
         return unless @hash_coluns;
         for my $hash_column (@hash_coluns) {
             my ($column) = ($hash_column =~ /^(.+)_hash$/);
-            warnf($column);
             next unless exists $args->{$column};
             $args->{$hash_column} = $class->make_hash($args->{$column});
         }

@@ -7,9 +7,9 @@ package Xpost::DB {
     use Carp ();
     use Data::GUID::URLSafe;
     use Data::Validator;
+    use DateTime;
     use Digest::MurmurHash qw/murmur_hash/;
     use Scope::Container::DBI;
-    use Time::Piece::Plus;
     use Class::Method::Modifiers;
 
     use Xpost;
@@ -29,6 +29,7 @@ package Xpost::DB {
         return Scope::Container::DBI->connect(shift->conf->{DBI});
     }
 
+
     #各メソッドへのtrigger
     #TODO 共通化すべし
     before 'insert', 'fast_insert' => sub {
@@ -36,7 +37,7 @@ package Xpost::DB {
         my $table = $self->schema->get_table($table_name);
         if ($table) {
             my @columns = @{$table->columns};
-            my $now = localtime;
+            my $now = DateTime->now(time_zone => Xpost->context->time_zone);
 
             #GUID
             if(grep /^guid$/, @columns) {
@@ -65,7 +66,7 @@ package Xpost::DB {
         my $table = $self->schema->get_table($table_name);
         if ($table) {
             my $columns = $table->columns;
-            my $now = localtime;
+            my $now = DateTime->now(time_zone => Xpost->context->time_zone);
             my @datetime_columns = grep /^updated_(at|on)$/, @$columns;
 
             #updated_at

@@ -13,6 +13,7 @@ package Xpost::Util::Template {
         number
         radio
         check
+        password
     /;
 
     no Mouse::Util::TypeConstraints;

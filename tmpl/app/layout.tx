@@ -112,14 +112,14 @@
         <input type="<: $a.type :>" id="<: $a.id :>" name="<: $a.name :>" class="<: $cls.join(' ') :>" />
         :}
         :if ($a.help_inline) {
-        <span class="help-inline"><: $a.help_inline :></span>
+        <span class="help-inline"><: $a.help_inline | mark_raw :></span>
         :}
         :# エラーがある場合は出す
         :if ($a.display_error) {
         <span class="help-block"><: $error_msg :></span>
         :}
         :if ($a.help_block) {
-        <span class="help-block"><: $a.help_block :></span>
+        <span class="help-block"><: $a.help_block | mark_raw :></span>
         :}
     </div>
 </div>

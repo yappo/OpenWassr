@@ -1,0 +1,27 @@
+:cascade layout
+
+:around content -> {
+    <h1>会員登録</h1>
+    <p>以下の内容で登録します、よければ登録ボタンを押してください。</p>
+    <table class="zebra-striped">
+      <tr>
+        <th>ユーザーID</th>
+        <td><: c().req.param('username') :></td>
+      </tr>
+      <tr>
+        <th>パスワード</th>
+        <td><: '*' | repeat(c().req.param('password').length()) :></td>
+      </tr>
+    </table>
+    <form action="/register/" method="post" class="form-stacked">
+        :hidden({name => 'u'})
+        :hidden({name => 'username'})
+        :hidden({name => 'password'})
+        :hidden({name => 'password2'})
+        :hidden({name => 'register', value => 1})
+        <div class="actions">
+            <button type="submit" class="btn primary">登録</button>
+        </div>
+    </form>
+:}
+

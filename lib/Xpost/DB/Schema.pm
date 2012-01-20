@@ -1,5 +1,5 @@
 package Xpost::DB::Schema;
-use Time::Piece::Plus;
+use DateTime::Format::MySQL;
 
 use Teng::Schema::Declare;
 table {
@@ -16,12 +16,13 @@ table {
     inflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_datetime(str => $value);
+        return DateTime::Format::MySQL->parse_datetime($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_datetime : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_datetime($value);
     };
 
 };
@@ -54,12 +55,13 @@ table {
     inflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_datetime(str => $value);
+        return DateTime::Format::MySQL->parse_datetime($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_datetime : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_datetime($value);
     };
 
 };
@@ -89,19 +91,20 @@ table {
     inflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_datetime(str => $value);
+        return DateTime::Format::MySQL->parse_datetime($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_datetime : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_datetime($value);
     };
 
 };
 
 table {
     name 'user';
-    pk 'created_at','id';
+    pk 'email','id';
     columns (
         {name => 'profile', type => 12},
         {name => 'email_hash', type => 4},
@@ -110,8 +113,8 @@ table {
         {name => 'full_name', type => 12},
         {name => 'username', type => 12},
         {name => 'email', type => 12},
-        {name => 'password', type => 12},
         {name => 'created_at', type => 11},
+        {name => 'password', type => 12},
         {name => 'password_hash', type => 4},
         {name => 'id', type => 4},
     );
@@ -119,12 +122,13 @@ table {
     inflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_datetime(str => $value);
+        return DateTime::Format::MySQL->parse_datetime($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_datetime : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_datetime($value);
     };
 
 };

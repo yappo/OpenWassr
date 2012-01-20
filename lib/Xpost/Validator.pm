@@ -26,7 +26,10 @@ package Xpost::Validator {
         $self->SUPER::check(@_);
         return if $self->has_error;
         $self->{valid_params} = {};
-        $self->{valid_params}->{$_} = 1 for (keys %args);
+        for my $key (keys %args) {
+            next if ref $key;
+            $self->{valid_params}->{$key} = 1;
+        }
     }
 
 

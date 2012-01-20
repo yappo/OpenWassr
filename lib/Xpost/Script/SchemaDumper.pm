@@ -22,7 +22,7 @@ sub data_section   { Data::Section::Simple->new(__PACKAGE__)->get_data_section }
 
 sub run {
     my ($class, $c) = @_;
-    my $dbi = Xpost::DB->get_dbi(type => 'master');
+    my $dbi = Xpost::DB->get_dbh(type => 'master');
     my $schema = Teng::Schema::Dumper->dump(
         dbh => $dbi,
         namespace => 'Xpost::DB',
@@ -94,24 +94,26 @@ __DATA__
     inflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_datetime(str => $value);
+        return DateTime::Format::MySQL->parse_datetime($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_at$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_datetime : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_datetime($value);
     };
 : }
 :if $date_exists {
     inflate qr{_on$} => sub {
         my $value = shift;
         return unless $value;
-        return Time::Piece::Plus->parse_mysql_date(str => $value);
+        return DateTime::Format::MySQL->parse_date($value)->set_time_zone('Asia/Tokyo');
     };
     deflate qr{_on$} => sub {
         my $value = shift;
         return unless $value;
-        return ref $value ? $value->mysql_date : $value;
+        return $value unless ref $value;
+        return DateTime::Format::MySQL->format_date($value);
     };
 : }
 
@@ -126,4 +128,4 @@ use parent qw/Xpost::Model/;
 1;
 
 @@ header
-use Time::Piece::Plus;
+use DateTime::Format::MySQL;

@@ -16,5 +16,16 @@ package Xpost::Validator::Register {
             $self->set_error(email => 'UNIQUE');
         }
     }
+
+    sub create {
+        my $self = shift;
+        $self->check(
+            u          => ['NOT_NULL', 'ASCII'],
+            username   => [[FILTER => 'trim'], 'NOT_NULL', 'ASCII', [qw/LENGTH 3 16/]],
+            password   => ['NOT_NULL', 'ASCII', [qw/LENGTH 6 255/]],
+            password2  => ['NOT_NULL', 'ASCII', [qw/LENGTH 6 255/]],
+            {password2 => [qw/password password2/]} => ['DUPLICATION'],
+        );
+    }
 }
 1;
